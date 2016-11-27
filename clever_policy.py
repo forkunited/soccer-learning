@@ -3,6 +3,7 @@ import gym_soccer
 import numpy as np
 import math
 # this probably has some bugs because I was trying a couple of new things but should still give you a baseline (and you can always remove them). I couldn't find my backup, I may have accidentally overwritten :(
+# also sorry if the code is not well-written, I don't have that much experience with Python.
 def sarsa_gradient (): # th_x is the value function estimation parameters, mu_x_y is the set of parameters for the mean of the Gaussian for the x parameter of yth action (angle of kick for ex)
 	env = gym.make('SoccerEmptyGoal-v0') # create env
 	num_features = 58
