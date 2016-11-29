@@ -1,10 +1,11 @@
 import numpy as np
 import math
+import random
 
 class ExplorationStrategy:
     NONE = 0
     SOFTMAX = 1
-
+    EPSILON_GREEDY = 2
 
 class LinearApproximatedOnlineLearner:
 
@@ -17,7 +18,7 @@ class LinearApproximatedOnlineLearner:
        
     
     def _softmax(self, x, l):
-        return np.exp(l*x)/np.sum(np.exp(l*x), axis=0)
+        return np.exp(np.multiply(l,x-np.max(x)))/np.sum(np.exp(np.multiply(l,x-np.max(x))), axis=0)
 
     def act(self, state, exploration=ExplorationStrategy.NONE, exploration_param=1):
         Q = [self.Q(state, action) for action in range(0, self.actions.size())]
@@ -33,6 +34,11 @@ class LinearApproximatedOnlineLearner:
             p = self._softmax(Q, exploration_param)
             #print(p)
             return np.where(np.random.multinomial(1, p, size=1)[0] == 1)[0][0]
+        elif exploration == ExplorationStrategy.EPSILON_GREEDY:
+            if random.random() < exploration_param:
+                return random.randint(0, self.actions.size() - 1)
+            else:
+                return self.act(state)
         else:
             return # Error
 
