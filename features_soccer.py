@@ -79,22 +79,41 @@ class SoccerState:
 class FeaturesSoccerSmall:
 
     def __init__(self, actions):
-        theta_v = lambda s : SoccerState.get_angle_degrees(s, SoccerAngleFeature.AGENT_VELOCITY) # Velocity angle
+        theta_v = lambda s : SoccerState.get_angle_radians(s, SoccerAngleFeature.AGENT_VELOCITY) # Velocity angle
         m_v = lambda s : s[SoccerFeatureIndex.VELOCITY_MAGNITUDE]                                # Velocity magnitude
-        theta_a = lambda s : SoccerState.get_angle_degrees(s, SoccerAngleFeature.AGENT_BODY)     # Agent Body angle
+        theta_a = lambda s : SoccerState.get_angle_radians(s, SoccerAngleFeature.AGENT_BODY)     # Agent Body angle
         collide_b = lambda s : s[SoccerFeatureIndex.COLLIDING_WITH_BALL]                         # Colliding with ball
         collide_g = lambda s : s[SoccerFeatureIndex.COLLIDING_WITH_GOAL_POST]                    # Colliding with goal post
         kickable = lambda s : s[SoccerFeatureIndex.KICKABLE]                                     # Kickable
-        theta_gc = lambda s : SoccerState.get_angle_degrees(s, SoccerAngleFeature.GOAL_CENTER)   # Goal center angle
+        theta_gc = lambda s : SoccerState.get_angle_radians(s, SoccerAngleFeature.GOAL_CENTER)   # Goal center angle
         d_gc = lambda s : s[SoccerFeatureIndex.GOAL_CENTER_DISTANCE]                             # Goal center distance
-        theta_b = lambda s : SoccerState.get_angle_degrees(s, SoccerAngleFeature.BALL)           # Ball angle
+        theta_b = lambda s : SoccerState.get_angle_radians(s, SoccerAngleFeature.BALL)           # Ball angle
         d_b = lambda s : s[SoccerFeatureIndex.BALL_DISTANCE]                                     # Ball distance
         m_bv = lambda s : s[SoccerFeatureIndex.BALL_VELOCITY_MAGNITUDE]                          # Ball velocity magnitude
-        theta_bv = lambda s : SoccerState.get_angle_degrees(s, SoccerAngleFeature.BALL_VELOCITY) # Ball velocity angle
+        theta_bv = lambda s : SoccerState.get_angle_radians(s, SoccerAngleFeature.BALL_VELOCITY) # Ball velocity angle
         bias = lambda s : 1        
 
-        self.features = [theta_v, m_v, theta_a, collide_b, collide_g, kickable, theta_gc, d_gc, theta_b, d_b, m_bv, theta_bv, bias]
-        self.feature_names = ["theta_v", "m_v", "theta_a", "collide_b", "collide_g", "kickable", "theta_gc", "d_gc", "theta_b", "d_b", "m_bv", "theta_bv", "bias"]
+        theta_v2 = lambda s : theta_v(s)*theta_v(s)
+        theta_a2 = lambda s : theta_a(s)*theta_a(s)
+        theta_gc2 = lambda s : theta_gc(s)*theta_gc(s)
+        theta_b2 = lambda s : theta_b(s)*theta_b(s)
+        theta_bv2 = lambda s : theta_bv(s)*theta_bv(s)
+
+        theta_b_bv = lambda s : theta_b(s)*theta_bv(s)
+        theta_gc_b = lambda s : theta_gc(s)*theta_b(s)
+
+        base_features = [theta_v, m_v, theta_a, collide_b, collide_g, kickable, theta_gc, d_gc, theta_b, d_b, m_bv, theta_bv, bias]
+        base_feature_names = ["theta_v", "m_v", "theta_a", "collide_b", "collide_g", "kickable", "theta_gc", "d_gc", "theta_b", "d_b", "m_bv", "theta_bv", "bias"]
+        
+        squared_features = [theta_v2, theta_a2, theta_gc2, theta_b2, theta_bv2]
+        squared_feature_names = ["theta_v2", "theta_a2", "theta_gc2", "theta_b2", "theta_bv2"]
+
+        interaction_features = [theta_b_bv, theta_gc_b]
+        interaction_feature_names = ["theta_b_bv", "theta_gc_b"]
+
+        self.features = base_features + squared_features + interaction_features
+        self.feature_names = base_feature_names + squared_feature_names + interaction_feature_names
+
         self.actions = actions
 
 

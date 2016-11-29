@@ -9,7 +9,7 @@ from features_soccer import FeaturesSoccerSmall
 from learner import ExplorationStrategy
 from learner import LinearApproximatedOnlineLearner
 
-NUM_EPISODES = 1000
+NUM_EPISODES = 100
 
 turn_dirs = [SoccerDirection.BALL]
 dash_powers = [33,67,100] 
@@ -18,7 +18,7 @@ kick_dirs = [SoccerDirection.FORWARD, SoccerDirection.GOAL_CENTER]
 
 actions = ActionSpaceSoccerSimple(turn_dirs, dash_powers, kick_powers, kick_dirs)
 features = FeaturesSoccerSmall(actions)
-exploration = ExplorationStrategy.EPSILON_GREEDY #ExplorationStrategy.SOFTMAX
+exploration = ExplorationStrategy.SOFTMAX #ExplorationStrategy.EPSILON_GREEDY #ExplorationStrategy.SOFTMAX
 learner = LinearApproximatedOnlineLearner(features, actions)
 
 env = gym.make('SoccerEmptyGoal-v0')
@@ -28,18 +28,20 @@ for _ in range(NUM_EPISODES):
     done = False
     t = 0
     while not done:
-        action = learner.act(observation, exploration, .1)
-        #print(str(t))
-        #print("State:")
-        #print(features.state_feature_str(observation))
-        #print("Action: " + actions.env_action_str(observation, action))        
-
+        action = learner.act(observation, exploration, 1)
         observation_next, reward, done, info = env.step(actions.env_action(observation, action))
-        learner.update(observation, action, reward, observation_next)
-        observation = observation_next
+        if t != 0:
+            learner.update(observation, action, reward, observation_next)
+        
+            print(str(t))
+            print("State:")
+            print(features.state_feature_str(observation))
+            print("Action: " + actions.env_action_str(observation, action))
+            print("Reward: " + str(reward) + "\n\n")
+
+            observation = observation_next
         t = t + 1
 
-        print("Reward: " + str(reward) + "\n\n")
 
 #for _ in range(1000):
 #    env.render()

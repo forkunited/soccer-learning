@@ -9,7 +9,7 @@ class ExplorationStrategy:
 
 class LinearApproximatedOnlineLearner:
 
-    def __init__(self, features, actions, alpha=.01, gamma=.99):
+    def __init__(self, features, actions, alpha=.001, gamma=.99):
         self.features = features
         self.actions = actions
         self.theta = np.zeros(self.features.size())
@@ -52,6 +52,7 @@ class LinearApproximatedOnlineLearner:
         return np.dot(self.theta, self.features.compute(state, action))
 
     def update(self, state, action, reward, next_state):
+        #print(self.U(next_state))#self.theta)
         td_error = reward + self.gamma * self.U(next_state) - self.Q(state, action)
         self.theta = np.add(self.theta, self.alpha * td_error * self.features.compute(state, action))
 
