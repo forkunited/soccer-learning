@@ -1,8 +1,7 @@
 import numpy as np
-from enum import Enum
 import math
 
-class ExplorationStrategy(Enum):
+class ExplorationStrategy:
     NONE = 0
     SOFTMAX = 1
 
@@ -24,7 +23,7 @@ class LinearApproximatedOnlineLearner:
         Q = [self.Q(state, action) for action in range(0, self.actions.size())]
         if exploration == ExplorationStrategy.NONE:
             max_action = 0
-            max_value = -math.inf
+            max_value = -float("inf")
             for action in range(0, self.actions.size()):
                 if max_value < Q[action]:
                     max_value = Q[action]
@@ -32,12 +31,13 @@ class LinearApproximatedOnlineLearner:
             return max_action
         elif exploration == ExplorationStrategy.SOFTMAX:
             p = self._softmax(Q, exploration_param)
-            return np.random.multinomial(1, p, size=1)[0]
+            #print(p)
+            return np.where(np.random.multinomial(1, p, size=1)[0] == 1)[0][0]
         else:
             return # Error
 
     def U(self, state):
-        Q_max = -math.inf
+        Q_max = -float("inf")
         for i in range(0, self.actions.size()):
             Q_max = max(Q_max, self.Q(state, i))
         return Q_max
@@ -47,5 +47,5 @@ class LinearApproximatedOnlineLearner:
 
     def update(self, state, action, reward, next_state):
         td_error = reward + self.gamma * self.U(next_state) - self.Q(state, action)
-        self.theta = np.add(self.theta, alpha * td_error * self.features.compute(state, action))
+        self.theta = np.add(self.theta, self.alpha * td_error * self.features.compute(state, action))
 

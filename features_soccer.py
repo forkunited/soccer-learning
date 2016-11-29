@@ -1,8 +1,7 @@
 import numpy as np
-from enum import Enum
 import math
 
-class SoccerFeatureIndex(Enum):
+class SoccerFeatureIndex:
     VELOCITY_ANGLE_SINE = 2         # Sine of velocity angle
     VELOCITY_ANGLE_COSINE = 3       # Cosine of velocity angle
     VELOCITY_MAGNITUDE = 4          # Velocity magnitude
@@ -21,7 +20,7 @@ class SoccerFeatureIndex(Enum):
     BALL_VELOCITY_ANGLE_SINE = 56   # Ball velocity angle sine
     BALL_VELOCITY_ANGLE_COSINE = 57 # Ball velocity angle cosine
     
-class SoccerAngleFeature(Enum):
+class SoccerAngleFeature:
     AGENT_VELOCITY = 0
     AGENT_BODY = 1
     GOAL_CENTER = 2
@@ -39,42 +38,42 @@ class SoccerState:
     @staticmethod
     def get_angle_radians(state, angle_feature):
         if angle_feature == SoccerAngleFeature.BALL:
-            return SoccerState.get_angle_radians(state, SoccerFeatureIndex.BALL_ANGLE_COSINE, SoccerFeatureIndex.BALL_ANGLE_SINE)
+            return SoccerState.get_angle_radians_helper(state, SoccerFeatureIndex.BALL_ANGLE_COSINE, SoccerFeatureIndex.BALL_ANGLE_SINE)
         elif angle_feature == SoccerAngleFeature.GOAL_CENTER:
-            return SoccerState.get_angle_radians(state, SoccerFeatureIndex.GOAL_CENTER_COSINE, SoccerFeatureIndex.GOAL_CENTER_SINE)
+            return SoccerState.get_angle_radians_helper(state, SoccerFeatureIndex.GOAL_CENTER_COSINE, SoccerFeatureIndex.GOAL_CENTER_SINE)
         elif angle_feature == SoccerAngleFeature.AGENT_VELOCITY:
-            return SoccerState.get_angle_radians(state, SoccerFeatureIndex.VELOCITY_ANGLE_COSINE, SoccerFeatureIndex.VELOCITY_ANGLE_SINE)
+            return SoccerState.get_angle_radians_helper(state, SoccerFeatureIndex.VELOCITY_ANGLE_COSINE, SoccerFeatureIndex.VELOCITY_ANGLE_SINE)
         elif angle_feature == SoccerAngleFeature.AGENT_BODY:
-            return SoccerState.get_angle_radians(state, SoccerFeatureIndex.BODY_ANGLE_COSINE, SoccerFeatureIndex.BODY_ANGLE_SINE)
+            return SoccerState.get_angle_radians_helper(state, SoccerFeatureIndex.BODY_ANGLE_COSINE, SoccerFeatureIndex.BODY_ANGLE_SINE)
         elif angle_feature == SoccerAngleFeature.BALL_VELOCITY:
-            return SoccerState.get_angle_radians(state, SoccerFeatureIndex.BALL_VELOCITY_ANGLE_COSINE, SoccerFeatureIndex.BALL_VELOCITY_ANGLE_SINE)
+            return SoccerState.get_angle_radians_helper(state, SoccerFeatureIndex.BALL_VELOCITY_ANGLE_COSINE, SoccerFeatureIndex.BALL_VELOCITY_ANGLE_SINE)
         else:
             return # Error
 
     @staticmethod
     def get_angle_degrees(state, angle_feature):
         if angle_feature == SoccerAngleFeature.BALL:
-            return SoccerState.get_angle_degrees(state, SoccerFeatureIndex.BALL_ANGLE_COSINE, SoccerFeatureIndex.BALL_ANGLE_SINE)
+            return SoccerState.get_angle_degrees_helper(state, SoccerFeatureIndex.BALL_ANGLE_COSINE, SoccerFeatureIndex.BALL_ANGLE_SINE)
         elif angle_feature == SoccerAngleFeature.GOAL_CENTER:
-            return SoccerState.get_angle_degrees(state, SoccerFeatureIndex.GOAL_CENTER_COSINE, SoccerFeatureIndex.GOAL_CENTER_SINE)
+            return SoccerState.get_angle_degrees_helper(state, SoccerFeatureIndex.GOAL_CENTER_COSINE, SoccerFeatureIndex.GOAL_CENTER_SINE)
         elif angle_feature == SoccerAngleFeature.AGENT_VELOCITY:
-            return SoccerState.get_angle_degrees(state, SoccerFeatureIndex.VELOCITY_ANGLE_COSINE, SoccerFeatureIndex.VELOCITY_ANGLE_SINE)
+            return SoccerState.get_angle_degrees_helper(state, SoccerFeatureIndex.VELOCITY_ANGLE_COSINE, SoccerFeatureIndex.VELOCITY_ANGLE_SINE)
         elif angle_feature == SoccerAngleFeature.AGENT_BODY:
-            return SoccerState.get_angle_degrees(state, SoccerFeatureIndex.BODY_ANGLE_COSINE, SoccerFeatureIndex.BODY_ANGLE_SINE)
+            return SoccerState.get_angle_degrees_helper(state, SoccerFeatureIndex.BODY_ANGLE_COSINE, SoccerFeatureIndex.BODY_ANGLE_SINE)
         elif angle_feature == SoccerAngleFeature.BALL_VELOCITY:
-            return SoccerState.get_angle_degrees(state, SoccerFeatureIndex.BALL_VELOCITY_ANGLE_COSINE, SoccerFeatureIndex.BALL_VELOCITY_ANGLE_SINE)
+            return SoccerState.get_angle_degrees_helper(state, SoccerFeatureIndex.BALL_VELOCITY_ANGLE_COSINE, SoccerFeatureIndex.BALL_VELOCITY_ANGLE_SINE)
         else:
             return # Error
 
     @staticmethod
-    def get_angle_radians(state, cos_index, sin_index):
+    def get_angle_radians_helper(state, cos_index, sin_index):
         angle_cos = state[cos_index]
         angle_sin = state[sin_index]
         return np.arccos(angle_cos)*np.sign(angle_sin)
 
     @staticmethod
-    def get_angle_degrees(state, cos_index, sin_index):
-        return self.get_angle_radians(state, cos_index, sin_index)*360/(2*math.pi)
+    def get_angle_degrees_helper(state, cos_index, sin_index):
+        return SoccerState.get_angle_radians_helper(state, cos_index, sin_index)*360/(2*math.pi)
 
 
 class FeaturesSoccerSmall:
@@ -100,20 +99,20 @@ class FeaturesSoccerSmall:
 
 
     def size(self):
-        return self.actions.size() * self.features.size()
+        return self.actions.size() * len(self.features)
  
 
     def compute(self, state, action):
         B = np.zeros(self.size())     
 
-        for i in range(0, self.features.size()):
-            B[action*self.features.size()+i] = self.features[i](state)        
+        for i in range(0, len(self.features)):
+            B[action*len(self.features)+i] = self.features[i](state)        
 
         return B
 
     def state_feature_str(self, state):
         s = ""
-        for i in range(0, self.features.size()):
+        for i in range(0, len(self.features)):
             s = s + self.feature_names[i] + ": " + str(self.features[i](state)) + "\n"
         return s
 

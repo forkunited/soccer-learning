@@ -1,18 +1,17 @@
 import numpy as np
-from enum import Enum
 from features_soccer import SoccerState
 from features_soccer import SoccerAngleFeature
 
-class SoccerActionType(Enum):
+class SoccerActionType:
     DASH = 0
     TURN = 1
     KICK = 2
 
-class SoccerActionParameter(Enum):
-    POWER = 0
-    ANGLE = 1
+class SoccerActionParameter:
+    POWER = 1
+    ANGLE = 0
 
-class SoccerDirection(Enum):
+class SoccerDirection:
     LEFT = 0
     RIGHT = 1
     FORWARD = 2
@@ -43,13 +42,13 @@ class ActionSpaceSoccerSimple:
    
 
     def size(self):
-        return len(self.turn_dirs) + len(self.dashPowers)*4 + len(self.kick_powers)*len(self.kick_dirs)
+        return len(self.turn_dirs) + len(self.dash_powers)*4 + len(self.kick_powers)*len(self.kick_dirs)
 
 
     def get_action_type(self, action_index):
         if action_index < len(self.turn_dirs):
             return SoccerActionType.TURN
-        elif action_index < 4*len(self.dashPowers):
+        elif action_index < len(self.turn_dirs) + 4*len(self.dash_powers):
             return SoccerActionType.DASH
         else:
             return SoccerActionType.KICK  
@@ -57,20 +56,20 @@ class ActionSpaceSoccerSimple:
 
     def get_action_param_values(self, state, action_index):
         action_type = self.get_action_type(action_index) 
-        if action_type == ActionType.TURN:
+        if action_type == SoccerActionType.TURN:
             turn_dir = self.turn_dirs[action_index]
             return [self.get_turn_angle(state, turn_dir)]
-        elif action_type == ActionType.DASH:
+        elif action_type == SoccerActionType.DASH:
             dash_index = self.get_dash_index(action_index)
             dash_power = self.get_dash_power(dash_index)
             dash_angle = self.get_dash_angle(dash_index)
-            return [dash_power, dash_angle]
+            return [dash_angle, dash_power]
         else:
             kick_index = self.get_kick_index(action_index)
             kick_power = self.get_kick_power(kick_index)
             kick_direction = self.get_kick_direction(kick_index)
             kick_angle = self.get_kick_angle(state, kick_direction)
-            return [kick_power, kick_angle]
+            return [kick_angle, kick_power]
 
 
     def get_dash_index(self, action_index):
@@ -113,7 +112,7 @@ class ActionSpaceSoccerSimple:
 
     def get_kick_direction(self, kick_index):
         dir_index = kick_index // len(self.kick_powers)
-        return self.kick_dirs(dir_index)
+        return self.kick_dirs[dir_index]
 
     def get_kick_angle(self, state, direction):
         if direction == SoccerDirection.FORWARD:
@@ -135,7 +134,7 @@ class ActionSpaceSoccerSimple:
         else:
             return [action_type, [0],[0],[0],[params[SoccerActionParameter.POWER]],[params[SoccerActionParameter.ANGLE]]]
 
-    def env_action_string(self, state, action_index):
+    def env_action_str(self, state, action_index):
         action_type = self.get_action_type(action_index)
         params = self.get_action_param_values(state, action_index)
 

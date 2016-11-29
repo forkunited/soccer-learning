@@ -28,8 +28,7 @@ for _ in range(NUM_EPISODES):
     done = False
     t = 0
     while not done:
-        action = learner.act(observation, exploration)
-    
+        action = learner.act(observation, exploration, .05)
         print(str(t))
         print("Action: " + actions.env_action_str(observation, action))
         print("State:\n")
