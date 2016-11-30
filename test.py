@@ -9,7 +9,7 @@ from features_soccer import FeaturesSoccerSmall
 from learner import ExplorationStrategy
 from learner import LinearApproximatedOnlineLearner
 
-NUM_EPISODES = 100
+NUM_EPISODES = 500
 
 turn_dirs = [SoccerDirection.BALL]
 dash_powers = [33,67,100] 
@@ -28,19 +28,20 @@ for _ in range(NUM_EPISODES):
     done = False
     t = 0
     while not done:
+        #env.render()
         action = learner.act(observation, exploration, 1)
         observation_next, reward, done, info = env.step(actions.env_action(observation, action))
-        if t != 0:
+        if not done:
             learner.update(observation, action, reward, observation_next)
         
             print(str(t))
             print("State:")
             print(features.state_feature_str(observation))
             print("Action: " + actions.env_action_str(observation, action))
-            print("Reward: " + str(reward) + "\n\n")
+            print(str(t) + " Reward: " + str(reward) + "\n\n")
 
             observation = observation_next
-        t = t + 1
+            t = t + 1
 
 
 #for _ in range(1000):
