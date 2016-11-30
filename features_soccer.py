@@ -36,6 +36,10 @@ class SoccerState:
         return state[index]
 
     @staticmethod
+    def is_kickable(state):
+        return state[SoccerFeatureIndex.KICKABLE] != -1
+
+    @staticmethod
     def get_angle_radians(state, angle_feature):
         if angle_feature == SoccerAngleFeature.BALL:
             return SoccerState.get_angle_radians_helper(state, SoccerFeatureIndex.BALL_ANGLE_COSINE, SoccerFeatureIndex.BALL_ANGLE_SINE)
