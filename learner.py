@@ -25,10 +25,12 @@ class LinearApproximatedOnlineLearner:
         if exploration == ExplorationStrategy.NONE:
             max_action = 0
             max_value = -float("inf")
+            i = 0
             for action in self.actions.valid_range(state):
-                if max_value < Q[action]:
-                    max_value = Q[action]
+                if max_value < Q[i]:
+                    max_value = Q[i]
                     max_action = action
+                i = i + 1
             return max_action
         elif exploration == ExplorationStrategy.SOFTMAX:
             p = self._softmax(Q, exploration_param)

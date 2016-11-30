@@ -109,14 +109,14 @@ class FeaturesSoccerSmall:
         base_features = [theta_v, m_v, theta_a, collide_b, collide_g, kickable, theta_gc, d_gc, theta_b, d_b, m_bv, theta_bv, bias]
         base_feature_names = ["theta_v", "m_v", "theta_a", "collide_b", "collide_g", "kickable", "theta_gc", "d_gc", "theta_b", "d_b", "m_bv", "theta_bv", "bias"]
         
-        squared_features = [theta_v2, theta_a2, theta_gc2, theta_b2, theta_bv2]
-        squared_feature_names = ["theta_v2", "theta_a2", "theta_gc2", "theta_b2", "theta_bv2"]
+        #squared_features = [theta_v2, theta_a2, theta_gc2, theta_b2, theta_bv2]
+        #squared_feature_names = ["theta_v2", "theta_a2", "theta_gc2", "theta_b2", "theta_bv2"]
 
         interaction_features = [theta_b_bv, theta_gc_b]
         interaction_feature_names = ["theta_b_bv", "theta_gc_b"]
 
-        self.features = base_features + squared_features + interaction_features
-        self.feature_names = base_feature_names + squared_feature_names + interaction_feature_names
+        self.features = base_features + interaction_features #+ squared_features
+        self.feature_names = base_feature_names + interaction_feature_names #+ squared_feature_names
 
         self.actions = actions
 

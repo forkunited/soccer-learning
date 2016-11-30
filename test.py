@@ -9,16 +9,16 @@ from features_soccer import FeaturesSoccerSmall
 from learner import ExplorationStrategy
 from learner import LinearApproximatedOnlineLearner
 
-NUM_EPISODES = 1000
+NUM_EPISODES = 10#500
 
 turn_dirs = [SoccerDirection.BALL]
 dash_powers = [0,50,100] 
-kick_powers = [0,50,100]
+kick_powers = [10,25]
 kick_dirs = [SoccerDirection.GOAL_CENTER] # SoccerDirection.FORWARD
 
 actions = ActionSpaceSoccerSimple(turn_dirs, dash_powers, kick_powers, kick_dirs)
 features = FeaturesSoccerSmall(actions)
-exploration = ExplorationStrategy.SOFTMAX #ExplorationStrategy.EPSILON_GREEDY #ExplorationStrategy.SOFTMAX
+exploration = ExplorationStrategy.EPSILON_GREEDY #ExplorationStrategy.EPSILON_GREEDY #ExplorationStrategy.SOFTMAX
 learner = LinearApproximatedOnlineLearner(features, actions)
 
 env = gym.make('SoccerEmptyGoal-v0')
@@ -29,7 +29,7 @@ for _ in range(NUM_EPISODES):
     t = 0
     while not done:
         #env.render()
-        action = learner.act(observation, exploration, 1)
+        action = learner.act(observation, exploration, 0.1)
         observation_next, reward, done, info = env.step(actions.env_action(observation, action))
         if not done:
             learner.update(observation, action, reward, observation_next)

@@ -69,7 +69,7 @@ class ActionSpaceSoccerSimple:
         elif action_type == SoccerActionType.DASH:
             dash_index = self.get_dash_index(action_index)
             dash_power = self.get_dash_power(dash_index)
-            dash_angle = self.get_dash_angle(dash_index)
+            dash_angle = self.get_dash_angle(state, dash_index)
             return [dash_angle, dash_power]
         else:
             kick_index = self.get_kick_index(action_index)
@@ -88,17 +88,18 @@ class ActionSpaceSoccerSimple:
         return self.dash_powers[power_index]
 
 
-    def get_dash_angle(self, dash_index):
+    def get_dash_angle(self, state, dash_index):
         # Left, right, forward, backward
         dir_index = dash_index // len(self.dash_powers) 
+        rel_dir = SoccerState.get_angle_degrees(state, SoccerAngleFeature.BALL)
         if dir_index == SoccerDirection.LEFT:
-            return -90
+            return -90+rel_dir
         elif dir_index == SoccerDirection.RIGHT:
-            return 90
+            return 90+rel_dir
         elif dir_index == SoccerDirection.FORWARD:
-            return 0
+            return 0+rel_dir
         elif dir_index == SoccerDirection.BACKWARD:
-            return 180
+            return 180+rel_dir
         else:
             return # Error
 
