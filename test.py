@@ -9,12 +9,12 @@ from features_soccer import FeaturesSoccerSmall
 from learner import ExplorationStrategy
 from learner import LinearApproximatedOnlineLearner
 
-NUM_EPISODES = 100
+NUM_EPISODES = 1000
 
 turn_dirs = [SoccerDirection.BALL]
-dash_powers = [33,100] 
-kick_powers = [33,100]
-kick_dirs = [SoccerDirection.FORWARD, SoccerDirection.GOAL_CENTER]
+dash_powers = [0,50,100] 
+kick_powers = [0,50,100]
+kick_dirs = [SoccerDirection.GOAL_CENTER] # SoccerDirection.FORWARD
 
 actions = ActionSpaceSoccerSimple(turn_dirs, dash_powers, kick_powers, kick_dirs)
 features = FeaturesSoccerSmall(actions)

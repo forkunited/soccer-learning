@@ -21,11 +21,11 @@ class LinearApproximatedOnlineLearner:
         return np.exp(np.multiply(l,x-np.max(x)))/np.sum(np.exp(np.multiply(l,x-np.max(x))), axis=0)
 
     def act(self, state, exploration=ExplorationStrategy.NONE, exploration_param=1):
-        Q = [self.Q(state, action) for action in range(0, self.actions.size(state))]
+        Q = [self.Q(state, action) for action in self.actions.valid_range(state)]
         if exploration == ExplorationStrategy.NONE:
             max_action = 0
             max_value = -float("inf")
-            for action in range(0, self.actions.size(state)):
+            for action in self.actions.valid_range(state):
                 if max_value < Q[action]:
                     max_value = Q[action]
                     max_action = action
@@ -33,10 +33,10 @@ class LinearApproximatedOnlineLearner:
         elif exploration == ExplorationStrategy.SOFTMAX:
             p = self._softmax(Q, exploration_param)
             #print(p)
-            return np.where(np.random.multinomial(1, p, size=1)[0] == 1)[0][0]
+            return self.actions.valid_range(state)[np.where(np.random.multinomial(1, p, size=1)[0] == 1)[0][0]]
         elif exploration == ExplorationStrategy.EPSILON_GREEDY:
             if random.random() < exploration_param:
-                return random.randint(0, self.actions.size(state) - 1)
+                return random.choice(self.actions.valid_range(state))
             else:
                 return self.act(state)
         else:
@@ -44,7 +44,7 @@ class LinearApproximatedOnlineLearner:
 
     def U(self, state):
         Q_max = -float("inf")
-        for i in range(0, self.actions.size(state)):
+        for i in self.actions.valid_range(state):
             Q_max = max(Q_max, self.Q(state, i))
         return Q_max
 

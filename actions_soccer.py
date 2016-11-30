@@ -39,7 +39,12 @@ class ActionSpaceSoccerSimple:
         # 4|dashPowers|+1...4|dashPowers|+|kickPowers| : First kick direction
         # ...
         # 4|dashPowers|+|kickPowers|(|kickDirections| - 1) + 1...  : Last kick direction
-   
+  
+    def valid_range(self, state):
+        if SoccerState.is_kickable(state):
+            return range(len(self.turn_dirs)+len(self.dash_powers)*4, self.size())
+        else:
+            return range(0, len(self.turn_dirs)+len(self.dash_powers)*4)
 
     def size(self, state = None):
         if state == None or SoccerState.is_kickable(state):
