@@ -1,3 +1,5 @@
+# A linearly approximated Q-learning agent
+
 import numpy as np
 import math
 import random
@@ -9,12 +11,16 @@ class ExplorationStrategy:
 
 class LinearApproximatedOnlineLearner:
 
-    def __init__(self, features, actions, alpha=.001, gamma=.99):
+    def __init__(self, features, actions, alpha=.001, gamma=.99, theta=0):
         self.features = features
         self.actions = actions
-        self.theta = np.zeros(self.features.size())
         self.alpha = alpha
         self.gamma = gamma
+
+        if theta == 0:
+            self.theta = np.zeros(self.features.size())
+        else:
+            self.theta = theta
        
     
     def _softmax(self, x, l):

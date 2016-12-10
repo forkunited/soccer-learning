@@ -1,3 +1,6 @@
+# This code represents the Q-learning finite action spaces
+# for the soccer environment
+
 import numpy as np
 from features_soccer import SoccerState
 from features_soccer import SoccerAngleFeature
@@ -18,7 +21,11 @@ class SoccerDirection:
     BACKWARD = 3
     GOAL_CENTER = 4
     BALL = 5
+    GOALIE_LEFT = 6
+    GOALIE_RIGHT = 7
 
+# This represents an action space given a finite set of turn directions,
+# dash powers, kick powers, and kick directions
 class ActionSpaceSoccerSimple:
     
     def __init__(self, turn_dirs, dash_powers, kick_powers, kick_dirs):
@@ -31,6 +38,9 @@ class ActionSpaceSoccerSimple:
         self.kick_powers = kick_powers
         self.kick_dirs = kick_dirs
 
+        # This comment is a bit outdated in that it assumes that there
+        # is only one turn action.  But other than that, it gives the basic
+        # idea for how actions are indexed
         # 0                               : Turn toward ball
         # 1...|dashPowers|                : Dash left
         # |dashPowers|+1...2|dashPowers|  : Dash right
@@ -127,6 +137,10 @@ class ActionSpaceSoccerSimple:
             return 0
         elif direction == SoccerDirection.GOAL_CENTER:
             return SoccerState.get_angle_degrees(state, SoccerAngleFeature.GOAL_CENTER)
+        elif direction == SoccerDirection.GOALIE_LEFT:
+            return 0.8 * SoccerState.get_angle_degrees(state, SoccerAngleFeature.TOP_POST) + 0.2 * SoccerState.get_angle_degrees(state, SoccerAngleFeature.GOALIE)
+        elif direction == SoccerDirection.GOALIE_RIGHT:
+            return 0.8 * SoccerState.get_angle_degrees(state, SoccerAngleFeature.BOTTOM_POST) + 0.2 * SoccerState.get_angle_degrees(state, SoccerAngleFeature.GOALIE)
         else:
             return # Error
 

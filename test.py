@@ -31,14 +31,14 @@ for _ in range(NUM_EPISODES):
         #env.render()
         action = learner.act(observation, exploration, 0.1)
         observation_next, reward, done, info = env.step(actions.env_action(observation, action))
-        if not done:
+        if not done or done:
             learner.update(observation, action, reward, observation_next)
-        
-            print(str(t))
-            print("State:")
-            print(features.state_feature_str(observation))
-            print("Action: " + actions.env_action_str(observation, action))
-            print(str(t) + " Reward: " + str(reward) + "\n\n")
+            if done:
+                print(str(t))
+                print("State:")
+                print(features.state_feature_str(observation))
+                print("Action: " + actions.env_action_str(observation, action))
+                print(str(t) + " Reward: " + str(reward) + "\n\n")
 
             observation = observation_next
             t = t + 1
