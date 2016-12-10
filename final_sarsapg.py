@@ -44,10 +44,10 @@ def sarsa_gradient():
 		observation = env.reset()	# reset environment at the beginning of each episode
 		flag = 1			# flag that prevents update in the first step
 		total_reward = 0		# total reward in episode initialized to 0
-		if i_episode == 399:		# no learning in last 100 episodes
+		if i_episode == 399:		# no learning in last 100 episodes, only measuring performance
 			epsilon = 0
 		for t in range(500):		# max number of time steps
-			if i_episode >= 399:			
+			if i_episode >= 399:	# visualize last 100 episodes to observe what has been learned		
 				env.render() # visualization
 			ang_feat = extract_ang(observation) # extract angles + bias and append them to the original observation vector
 			observation = np.append(observation, ang_feat)
@@ -178,8 +178,8 @@ def sarsa_gradient():
 			previous_r = reward
 			total_reward += reward		# update total reward in episode
 			if done:	# if current episode is finished
-				delta = reward		# update is slightly different as we are at terminal state
-				if reward > 3:		# if a goal was scored
+				delta = reward		# update is slightly different when we are at terminal state
+				if reward > 4.5:		# if a goal was scored
 					if previous_a == 0: # update parameters
 						previous_pow = previous_action[1]
 						previous_ang = previous_action[2]
