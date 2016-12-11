@@ -25,7 +25,9 @@ class SoccerDirection:
     GOALIE_RIGHT = 7
 
 # This represents an action space given a finite set of turn directions,
-# dash powers, kick powers, and kick directions
+# dash powers, kick powers, and kick directions.  Each action in the 
+# action space is referred to by its index in classes outside of this
+# module
 class ActionSpaceSoccerSimple:
     
     def __init__(self, turn_dirs, dash_powers, kick_powers, kick_dirs):
@@ -50,18 +52,22 @@ class ActionSpaceSoccerSimple:
         # ...
         # 4|dashPowers|+|kickPowers|(|kickDirections| - 1) + 1...  : Last kick direction
   
+
+    # Get the valid range of action indices at the current state
     def valid_range(self, state):
         if SoccerState.is_kickable(state):
             return range(len(self.turn_dirs)+len(self.dash_powers)*4, self.size())
         else:
             return range(0, len(self.turn_dirs)+len(self.dash_powers)*4)
 
+    # Size of the action space
     def size(self, state = None):
         if state == None or SoccerState.is_kickable(state):
             return len(self.turn_dirs) + len(self.dash_powers)*4 + len(self.kick_powers)*len(self.kick_dirs)
         else:
             return len(self.turn_dirs) + len(self.dash_powers)*4
 
+    # Get whether the action is a kick, turn, or dash
     def get_action_type(self, action_index):
         if action_index < len(self.turn_dirs):
             return SoccerActionType.TURN
@@ -70,7 +76,7 @@ class ActionSpaceSoccerSimple:
         else:
             return SoccerActionType.KICK  
 
-
+    # Get parameter values corresponding to a given action
     def get_action_param_values(self, state, action_index):
         action_type = self.get_action_type(action_index) 
         if action_type == SoccerActionType.TURN:
@@ -144,7 +150,8 @@ class ActionSpaceSoccerSimple:
         else:
             return # Error
 
- 
+    # Get the representation of the action that works with
+    # the OpenAI gym soccer environment
     def env_action(self, state, action_index):
         action_type = self.get_action_type(action_index)
         params = self.get_action_param_values(state, action_index)
@@ -156,6 +163,7 @@ class ActionSpaceSoccerSimple:
         else:
             return [action_type, [0],[0],[0],[params[SoccerActionParameter.POWER]],[params[SoccerActionParameter.ANGLE]]]
 
+    # Get a string representation of the action
     def env_action_str(self, state, action_index):
         action_type = self.get_action_type(action_index)
         params = self.get_action_param_values(state, action_index)

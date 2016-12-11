@@ -1,5 +1,6 @@
 # Code for running the Q-learning experiments on the
-# soccer environment
+# soccer environment.  This code runs the experiments
+# documented in the paper
 
 import gym
 import gym_soccer
@@ -31,6 +32,7 @@ class ExperimentSoccer:
         else:
             return gym.make('SoccerEmptyGoal-v0')
 
+    # Aggregate the results of the experiment
     def aggregate(self, results):
         agg = []
         for i in range(len(results[0])):
@@ -49,6 +51,7 @@ class ExperimentSoccer:
 
         return agg
 
+    # Get a latex string representation of the results
     def str_aggregate(self, results):
         agg = self.aggregate(results)
         s = ""

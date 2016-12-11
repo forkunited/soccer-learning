@@ -22,10 +22,12 @@ class LinearApproximatedOnlineLearner:
         else:
             self.theta = theta
        
-    
+        
     def _softmax(self, x, l):
         return np.exp(np.multiply(l,x-np.max(x)))/np.sum(np.exp(np.multiply(l,x-np.max(x))), axis=0)
 
+    # Pick an action from the present state, possibly
+    # with some exploration
     def act(self, state, exploration=ExplorationStrategy.NONE, exploration_param=1):
         Q = [self.Q(state, action) for action in self.actions.valid_range(state)]
         if exploration == ExplorationStrategy.NONE:
@@ -50,15 +52,18 @@ class LinearApproximatedOnlineLearner:
         else:
             return # Error
 
+    # State value function
     def U(self, state):
         Q_max = -float("inf")
         for i in self.actions.valid_range(state):
             Q_max = max(Q_max, self.Q(state, i))
         return Q_max
 
+    # State action value function
     def Q(self, state, action):
         return np.dot(self.theta, self.features.compute(state, action))
 
+    # Perform approximate Q-learning update
     def update(self, state, action, reward, next_state):
         #print(self.U(next_state))#self.theta)
         td_error = reward + self.gamma * self.U(next_state) - self.Q(state, action)

@@ -1,3 +1,7 @@
+# This file contains code for running the experiments in
+# the paper.  Each commented code block below corresponds
+# to an experiment.  Simply uncomment them to run.
+
 import gym
 import gym_soccer
 import numpy
