@@ -1,7 +1,7 @@
 # soccer-learning
 
 This repository contains code for our soccer RL project for CS 238.
-The repository contains the following files:
+The repository contains the following code files:
 
 * run.py - Code for running Q-learning experiments (entry point)
 * experiment_soccer.py - Implementation for the experiments
@@ -9,4 +9,4 @@ The repository contains the following files:
 * actions_soccer.py - Representation of Q-learning action spaces
 * features_soccer.py - Representation of Q-learning features
 * qac_learn.py - QAC-learning implementation
-
+* q_learn_old.py - Old unused implementation of Q-learning
